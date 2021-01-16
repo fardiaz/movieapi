@@ -17,3 +17,13 @@ npx @adonisjs/cli migration:run
 npx @adonisjs/cli seed
 npx @adonisjs/cli serve
 ```
+
+to login as admin :
+
+- email : test@test.com
+- password: test
+
+to login as regular user :
+
+- email : test1@test.com
+- password: test
