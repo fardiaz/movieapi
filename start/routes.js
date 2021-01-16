@@ -32,4 +32,8 @@ Route.group(() => {
     Route.post('movies', 'MovieController.create').middleware('auth')
     Route.put('movies/:id', 'MovieController.update').middleware('auth')
     
+    Route.post('vote/:id', 'VoteController.vote').middleware('auth')
+    Route.post('unvote/:id', 'VoteController.unvote').middleware('auth')
+    
+
   }).prefix('api');
