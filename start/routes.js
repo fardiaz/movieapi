@@ -26,4 +26,9 @@ Route.group(() => {
     Route.post('auth/logout', 'UserController.logout').middleware('auth')
     Route.get('auth/current', 'UserController.current').middleware('auth')
 
+
+    Route.get('movies', 'MovieController.index') //.middleware('auth')
+    Route.post('movies', 'MovieController.create').middleware('auth')
+    Route.put('movies/:id', 'MovieController.update').middleware('auth')
+    
   }).prefix('api');
