@@ -7,6 +7,22 @@ const Database = use('Database')
 
 class VoteController {
 
+
+    async index({  response }) {
+        /*
+        SELECT COUNT(g.movie_id) AS vote_count, m.*
+        FROM votes AS g
+        LEFT JOIN movies AS m ON g.movie_id = m.id
+        GROUP BY g.movie_id
+        */
+        const votes = await Database.table('votes as g').count("g.movie_id as vote_count").select('m.*').leftJoin('movies as m', 'g.movie_id', 'm.id').groupBy('g.movie_id').orderBy('vote_count', 'desc')
+       
+        return response.status(200).send({
+            status: "success",
+            code: 200,
+            data :votes
+          });
+    }   
     async vote({ auth, params, response }) {
 
         try {

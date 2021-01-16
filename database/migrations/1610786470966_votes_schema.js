@@ -8,8 +8,8 @@ class VotesSchema extends Schema {
     this.create('votes', (table) => {
       table.increments()
       table.timestamps()
-      table.integer('user_id').notNullable()
-      table.integer('movie_id').notNullable()
+      table.integer('user_id').notNullable().unsigned().references('id').inTable('users')
+      table.integer('movie_id').notNullable().unsigned().references('id').inTable('movies')
     })
   }
 
