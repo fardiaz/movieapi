@@ -17,3 +17,13 @@
 const Route = use('Route')
 
 Route.on('/').render('welcome')
+
+
+Route.group(() => {
+    Route.post('auth/register', 'UserController.register')
+    Route.post('auth/create', 'UserController.create')
+    Route.post('auth/login', 'UserController.login')
+    Route.post('auth/logout', 'UserController.logout').middleware('auth')
+    Route.get('auth/current', 'UserController.current').middleware('auth')
+
+  }).prefix('api');
