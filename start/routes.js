@@ -28,6 +28,7 @@ Route.group(() => {
 
 
     Route.get('movies', 'MovieController.index') //.middleware('auth')
+    Route.get('movies/most', 'MovieController.mostViewed').middleware('auth')
     Route.post('movies', 'MovieController.create').middleware('auth')
     Route.put('movies/:id', 'MovieController.update').middleware('auth')
     

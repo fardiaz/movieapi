@@ -106,7 +106,7 @@ class MovieController {
 
                 if (user.is_admin) {
 
-                    let { title, description, artists, genres, watch_url, viewcount } = request.all();
+                    let { title, description, artists, genres, watch_url, duration, viewcount } = request.all();
 
                     if (title === "" || title === null) {
                         return response.status(400).send({
@@ -161,6 +161,54 @@ class MovieController {
                 message: "invalid jwt token ",
             });
         }
+    }
+
+    async mostViewed({ request, response }){
+        let { type } = request.all();
+
+        if(type !== 'movie' && type !== 'genre'){
+            return response.status(400).send({
+                status: "error",
+                code: 400,
+                message: "please specify type either movie or genre",
+            });
+        }
+        
+        if(type === 'genre'){
+            //SELECT SUM(viewcount) as counter, genres FROM `movies` GROUP BY genres order by counter DESC 
+            const movie = await Database.table('movies').sum("viewcount as view_count").select('genres as genre').groupBy('genres').orderBy('view_count', 'desc').first()
+            if(movie !== null ){
+                return response.status(200).send({
+                    status: "success",
+                    code: 200,
+                    data: movie
+                });   
+            }else{
+                return response.status(200).send({
+                    status: "success",
+                    code: 200,
+                    data:{}
+                });  
+            }
+        }
+
+        if(type === 'movie'){
+            const movie = await Database.table('movies').select('*').orderBy('viewcount', 'desc').first()
+            if(movie !== null ){
+                return response.status(200).send({
+                    status: "success",
+                    code: 200,
+                    data: movie
+                });   
+            }else{
+                return response.status(200).send({
+                    status: "success",
+                    code: 200,
+                    data:[]
+                });
+            }
+        }
+        
     }
 
 }
