@@ -114,6 +114,83 @@ class VoteController {
         }
     
     }
+    async mostVoted({ auth, request, response }){
+
+        const check = await auth.check();
+
+            // check auth user
+            if (check) {
+                const user = await auth.getUser();
+                //check if the user is admin
+                if(!user.is_admin){
+                    return response.status(401).send({
+                        status: "error",
+                        code: 401,
+                        message: "unauthorized",
+                    });
+                }
+                
+            }
+            
+        let { type } = request.all();
+
+        if(type !== 'movie' && type !== 'genre'){
+            return response.status(400).send({
+                status: "error",
+                code: 400,
+                message: "please specify type either movie or genre",
+            });
+        }
+        
+        if(type === 'genre'){
+            const movies = await Database.table('votes as g').count("g.movie_id as vote_count").select('m.*').leftJoin('movies as m', 'g.movie_id', 'm.id').groupBy('g.movie_id').orderBy('vote_count', 'desc')
+            let movieIDs = []
+            if(movies){
+                movies.map(item=>{
+                    movieIDs.push(item.id)
+                })
+                const genre = await Database.table('movies').count("id as genre_count").select('genres as genre').whereIn('id',movieIDs).groupBy('genres').orderBy('genre_count', 'desc').first()
+                if(movieIDs !== null ){
+                    return response.status(200).send({
+                        status: "success",
+                        code: 200,
+                        data: genre
+                    });   
+                }else{
+                    return response.status(200).send({
+                        status: "success",
+                        code: 200,
+                        data:{}
+                    });  
+                }
+            }else{
+                return response.status(200).send({
+                    status: "success",
+                    code: 200,
+                    data:{}
+                });  
+            }
+            
+        }
+
+        if(type === 'movie'){
+            const movie = await Database.table('votes as g').count("g.movie_id as vote_count").select('m.*').leftJoin('movies as m', 'g.movie_id', 'm.id').groupBy('g.movie_id').orderBy('vote_count', 'desc').first()
+            if(movie !== null ){
+                return response.status(200).send({
+                    status: "success",
+                    code: 200,
+                    data: movie
+                });   
+            }else{
+                return response.status(200).send({
+                    status: "success",
+                    code: 200,
+                    data:[]
+                });
+            }
+        }
+        
+    }
 }
 
 module.exports = VoteController

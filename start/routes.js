@@ -35,6 +35,7 @@ Route.group(() => {
     Route.post('vote/:id', 'VoteController.vote').middleware('auth')
     Route.post('unvote/:id', 'VoteController.unvote').middleware('auth')
     Route.get('vote/list', 'VoteController.index')
+    Route.get('vote/most', 'VoteController.mostVoted').middleware('auth')
     
 
   }).prefix('api');
