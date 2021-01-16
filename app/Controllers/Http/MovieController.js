@@ -6,6 +6,33 @@ const Database = use('Database')
 class MovieController {
 
 
+    async index({request, response}){
+        
+        const {
+            page,
+            perPage,
+            keyword
+        } = request.all();
+        
+        let data = null
+
+        if(keyword === null){
+             data = await Database.table('movies').select('*').orderBy('created_at', 'desc').paginate(page,perPage)
+        }else{
+            data = await Database.table('movies').select('*').where('title', 'LIKE', '%'+keyword+'%')
+            .orWhere('description', 'LIKE', '%'+keyword+'%')
+            .orWhere('artists', 'LIKE', '%'+keyword+'%')
+            .orWhere('genres', 'LIKE', '%'+keyword+'%')
+            .orderBy('created_at', 'desc').paginate(page,perPage)
+        }
+            
+        return response.status(200).send({
+            status: "success",
+            code: 200,
+            data
+        });
+    }
+    
     /***
      * Create movie method
      *
